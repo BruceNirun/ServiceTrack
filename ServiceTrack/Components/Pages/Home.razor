@@ -1,67 +1,86 @@
 ﻿@page "/"
 
-<MudGrid Spacing="3">
-    @* ส่วนหัวของหน้า *@
-    <MudItem xs="12">
-        <MudPaper Class="d-flex align-center pa-4" Elevation="0">
-            <MudText Typo="Typo.h5" Class="mr-auto">แดชบอร์ดผู้ดูแลระบบ</MudText>
-            <MudSelect T="string" Label="เดือนนี้" Variant="Variant.Outlined" Dense="true" Class="mr-2" Style="width: 150px;">
-                <MudSelectItem Value='"this_month"'>เดือนนี้</MudSelectItem>
-                <MudSelectItem Value='"last_month"'>เดือนที่แล้ว</MudSelectItem>
-            </MudSelect>
-            <MudButton Variant="Variant.Filled" Color="Color.Primary">ตั้งค่า</MudButton>
-        </MudPaper>
-    </MudItem>
+@* ใช้ MudContainer เพื่อครอบเนื้อหาทั้งหมดและเว้นระยะห่างจากขอบ *@
+<MudContainer MaxWidth="MaxWidth.False" Class="mt-4">
 
-    @* การ์ดแสดงข้อมูลสรุป 4 ใบ *@
-    <MudItem xs="12" sm="6" md="3">
-        <MudPaper Class="pa-4" Style="background-color: #326ff9; color: white;">
-            <MudIcon Icon="@Icons.Material.Filled.Assessment" Class="mb-2" />
-            <MudText Typo="Typo.body1">คำขอทั้งหมด</MudText>
-            <MudText Typo="Typo.h4">2</MudText>
-        </MudPaper>
-    </MudItem>
+    @* 1. ส่วนแท็บเมนูหลัก *@
+    <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="mt-6">
+        <MudTabPanel Text="หลัก" Icon="@Icons.Material.Filled.Dashboard" />
+        <MudTabPanel Text="ปฏิทิน" Icon="@Icons.Material.Filled.CalendarToday" />
+        <MudTabPanel Text="ทรัพย์สิน" Icon="@Icons.Material.Filled.BusinessCenter" />
+    </MudTabs>
 
-    <MudItem xs="12" sm="6" md="3">
-        <MudPaper Class="pa-4" Style="background-color: #00C853; color: white;">
-            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Class="mb-2" />
-            <MudText Typo="Typo.body1">อัตราความสำเร็จ</MudText>
-            <MudText Typo="Typo.h4">50%</MudText>
-        </MudPaper>
-    </MudItem>
+    @* 2. ส่วนหัวของ Dashboard *@
+    <div class="d-flex align-center mt-6">
+        <div>
+            <MudText Typo="Typo.h5">แดชบอร์ดผู้ดูแลระบบ</MudText>
+            <MudText Typo="Typo.body2" Color="Color.Inherit">ภาพรวมและการวิเคราะห์ระบบแจ้งซ่อม</MudText>
+        </div>
+        <MudSpacer />
+        <MudSelect T="string" Label="เดือนนี้" Variant="Variant.Outlined" Dense="true" Class="mr-2" Style="width: 150px;">
+            <MudSelectItem Value='"this_month"'>เดือนนี้</MudSelectItem>
+            <MudSelectItem Value='"last_month"'>เดือนที่แล้ว</MudSelectItem>
+        </MudSelect>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Settings">ตั้งค่า</MudButton>
+    </div>
 
-    <MudItem xs="12" sm="6" md="3">
-        <MudPaper Class="pa-4" Style="background-color: #FF6D00; color: white;">
-            <MudIcon Icon="@Icons.Material.Filled.Timer" Class="mb-2" />
-            <MudText Typo="Typo.body1">เวลาเฉลี่ย (ชม.)</MudText>
-            <MudText Typo="Typo.h4">13651.1</MudText>
-        </MudPaper>
-    </MudItem>
+    @* 3. การ์ดแสดงข้อมูลสรุป *@
+    <MudGrid Spacing="3" Class="mt-4">
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="pa-4 d-flex align-center" Style="background-color: #2196F3; color: white; border-radius: 12px;">
+                <MudIcon Icon="@Icons.Material.Filled.Assessment" Size="Size.Large" Class="mr-4"/>
+                <div>
+                    <MudText Typo="Typo.h6">2</MudText>
+                    <MudText Typo="Typo.body2">คำขอทั้งหมด</MudText>
+                </div>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+             <MudPaper Class="pa-4 d-flex align-center" Style="background-color: #4CAF50; color: white; border-radius: 12px;">
+                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Size="Size.Large" Class="mr-4"/>
+                <div>
+                    <MudText Typo="Typo.h6">50%</MudText>
+                    <MudText Typo="Typo.body2">อัตราความสำเร็จ</MudText>
+                </div>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="pa-4 d-flex align-center" Style="background-color: #FF9800; color: white; border-radius: 12px;">
+                <MudIcon Icon="@Icons.Material.Filled.Timer" Size="Size.Large" Class="mr-4"/>
+                <div>
+                    <MudText Typo="Typo.h6">13651.1</MudText>
+                    <MudText Typo="Typo.body2">เวลาเฉลี่ย (ชม.)</MudText>
+                </div>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+             <MudPaper Class="pa-4 d-flex align-center" Style="background-color: #9C27B0; color: white; border-radius: 12px;">
+                <MudIcon Icon="@Icons.Material.Filled.PendingActions" Size="Size.Large" Class="mr-4"/>
+                <div>
+                    <MudText Typo="Typo.h6">0</MudText>
+                    <MudText Typo="Typo.body2">รอดำเนินการ</MudText>
+                </div>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
 
-    <MudItem xs="12" sm="6" md="3">
-        <MudPaper Class="pa-4" Style="background-color: #776BE7; color: white;">
-            <MudIcon Icon="@Icons.Material.Filled.Pending" Class="mb-2" />
-            <MudText Typo="Typo.body1">รอดำเนินการ</MudText>
-            <MudText Typo="Typo.h4">0</MudText>
-        </MudPaper>
-    </MudItem>
+    @* 4. การ์ดแสดงกราฟ *@
+    <MudGrid Spacing="3" Class="mt-4">
+        <MudItem xs="12" lg="7">
+            <MudPaper Class="pa-4" Elevation="2" Style="border-radius: 12px; height: 100%;">
+                <MudText Typo="Typo.h6" GutterBottom="true">การแจ้งซ่อมตามหมวดหมู่</MudText>
+                <MudChart ChartType="ChartType.Bar" ChartSeries="@_categorySeries" XAxisLabels="@_categoryLabels" Height="350px" />
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" lg="5">
+            <MudPaper Class="pa-4" Elevation="2" Style="border-radius: 12px; height: 100%;">
+                <MudText Typo="Typo.h6" GutterBottom="true">ระดับความสำคัญ</MudText>
+                <MudChart ChartType="ChartType.Donut" InputData="@_priorityData" InputLabels="@_priorityLabels" Height="350px" />
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
 
-    @* กราฟแท่งและกราฟวงกลม *@
-    <MudItem xs="12" lg="6">
-        <MudPaper Class="pa-4" Elevation="2">
-            <MudText Typo="Typo.h6" GutterBottom="true">การแจ้งซ่อมตามหมวดหมู่</MudText>
-            <MudChart ChartType="ChartType.Bar" ChartSeries="@_categorySeries" XAxisLabels="@_categoryLabels" Height="300px" />
-        </MudPaper>
-    </MudItem>
-
-    <MudItem xs="12" lg="6">
-        <MudPaper Class="pa-4" Elevation="2">
-            <MudText Typo="Typo.h6" GutterBottom="true">ระดับความสำคัญ</MudText>
-            <MudChart ChartType="ChartType.Donut" InputData="@_priorityData" InputLabels="@_priorityLabels" Height="300px" />
-        </MudPaper>
-    </MudItem>
-
-</MudGrid>
+</MudContainer>
 
 @code {
     // --- ข้อมูลสำหรับกราฟแท่ง (หมวดหมู่) ---

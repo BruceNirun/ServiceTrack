@@ -1,7 +1,6 @@
 ﻿@inherits LayoutComponentBase
 
-@* 1. กำหนด Theme โดยตรง ไม่ต้องผูกกับตัวแปร IsDarkMode แล้ว *@
-<MudThemeProvider/>
+<MudThemeProvider Theme="_theme" />
 <MudDialogProvider />
 <MudSnackbarProvider />
 <MudPopoverProvider />
@@ -12,7 +11,6 @@
         <MudText Typo="Typo.h5" Class="ml-3">ServiceTrack</MudText>
         <MudSpacer />
         
-        @* 2. ลบสวิตช์เปลี่ยนโหมดออกไป *@
         <MudTooltip Text="การแจ้งเตือน">
             <MudIconButton Icon="@Icons.Material.Outlined.Notifications" Color="Color.Inherit" />
         </MudTooltip>
@@ -29,10 +27,9 @@
         <NavMenu />
     </MudDrawer>
 
-    <MudMainContent Class="pa-4">
-        <MudContainer MaxWidth="MaxWidth.ExtraLarge">
-            @Body
-        </MudContainer>
+    @* แก้ไขตรงนี้: เอา MudContainer และ Class ออก *@
+    <MudMainContent>
+        @Body
     </MudMainContent>
 </MudLayout>
 
@@ -43,4 +40,24 @@
     {
         _drawerOpen = !_drawerOpen;
     }
+
+    private MudTheme _theme = new MudTheme()
+    {
+        PaletteLight = new PaletteLight()
+        {
+            Primary = "#594AE2",
+            PrimaryContrastText = Colors.Shades.White, 
+            Secondary = "#00C853",
+            Background = "#F4F7FC",
+            AppbarBackground = "#594AE2",
+            DrawerBackground = "#FFFFFF",
+            DrawerText = Colors.Gray.Darken3, 
+            DrawerIcon = Colors.Gray.Darken2,
+            Surface = "#FFFFFF"
+        },
+        LayoutProperties = new LayoutProperties()
+        {
+            DefaultBorderRadius = "12px"
+        }
+    };
 }
