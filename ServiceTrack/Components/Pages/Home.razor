@@ -1,39 +1,77 @@
 ﻿@page "/"
 
-@using Microsoft.EntityFrameworkCore
-@using MudBlazor
-@using ServiceTrack.Models
-@inject ServiceTrack.Data.AppDb Db
+<MudGrid Spacing="3">
+    @* ส่วนหัวของหน้า *@
+    <MudItem xs="12">
+        <MudPaper Class="d-flex align-center pa-4" Elevation="0">
+            <MudText Typo="Typo.h5" Class="mr-auto">แดชบอร์ดผู้ดูแลระบบ</MudText>
+            <MudSelect T="string" Label="เดือนนี้" Variant="Variant.Outlined" Dense="true" Class="mr-2" Style="width: 150px;">
+                <MudSelectItem Value='"this_month"'>เดือนนี้</MudSelectItem>
+                <MudSelectItem Value='"last_month"'>เดือนที่แล้ว</MudSelectItem>
+            </MudSelect>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary">ตั้งค่า</MudButton>
+        </MudPaper>
+    </MudItem>
 
-<PageTitle>Home</PageTitle>
+    @* การ์ดแสดงข้อมูลสรุป 4 ใบ *@
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Class="pa-4" Style="background-color: #326ff9; color: white;">
+            <MudIcon Icon="@Icons.Material.Filled.Assessment" Class="mb-2" />
+            <MudText Typo="Typo.body1">คำขอทั้งหมด</MudText>
+            <MudText Typo="Typo.h4">2</MudText>
+        </MudPaper>
+    </MudItem>
 
-<h1>Hello, world!</h1>
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Class="pa-4" Style="background-color: #00C853; color: white;">
+            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Class="mb-2" />
+            <MudText Typo="Typo.body1">อัตราความสำเร็จ</MudText>
+            <MudText Typo="Typo.h4">50%</MudText>
+        </MudPaper>
+    </MudItem>
 
-Welcome to your new app.
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Class="pa-4" Style="background-color: #FF6D00; color: white;">
+            <MudIcon Icon="@Icons.Material.Filled.Timer" Class="mb-2" />
+            <MudText Typo="Typo.body1">เวลาเฉลี่ย (ชม.)</MudText>
+            <MudText Typo="Typo.h4">13651.1</MudText>
+        </MudPaper>
+    </MudItem>
 
-<MudButton Variant="Variant.Filled" Color="Color.Primary">Save</MudButton>
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Class="pa-4" Style="background-color: #776BE7; color: white;">
+            <MudIcon Icon="@Icons.Material.Filled.Pending" Class="mb-2" />
+            <MudText Typo="Typo.body1">รอดำเนินการ</MudText>
+            <MudText Typo="Typo.h4">0</MudText>
+        </MudPaper>
+    </MudItem>
 
-<MudTable Items="tickets">
-    <HeaderContent>
-        <MudTh>#</MudTh>
-        <MudTh>Title</MudTh>
-        <MudTh>Status</MudTh>
-    </HeaderContent>
-    <RowTemplate>
-        <MudTd DataLabel="#">@context.TicketId</MudTd>
-        <MudTd>@context.Title</MudTd>
-        <MudTd>@context.Status</MudTd>
-    </RowTemplate>
-</MudTable>
+    @* กราฟแท่งและกราฟวงกลม *@
+    <MudItem xs="12" lg="6">
+        <MudPaper Class="pa-4" Elevation="2">
+            <MudText Typo="Typo.h6" GutterBottom="true">การแจ้งซ่อมตามหมวดหมู่</MudText>
+            <MudChart ChartType="ChartType.Bar" ChartSeries="@_categorySeries" XAxisLabels="@_categoryLabels" Height="300px" />
+        </MudPaper>
+    </MudItem>
 
+    <MudItem xs="12" lg="6">
+        <MudPaper Class="pa-4" Elevation="2">
+            <MudText Typo="Typo.h6" GutterBottom="true">ระดับความสำคัญ</MudText>
+            <MudChart ChartType="ChartType.Donut" InputData="@_priorityData" InputLabels="@_priorityLabels" Height="300px" />
+        </MudPaper>
+    </MudItem>
+
+</MudGrid>
 
 @code {
-    private List<Ticket> tickets = new();
-
-    protected override async Task OnInitializedAsync()
+    // --- ข้อมูลสำหรับกราฟแท่ง (หมวดหมู่) ---
+    private List<ChartSeries> _categorySeries = new List<ChartSeries>()
     {
-        tickets = await Db.Tickets
-                          .OrderByDescending(t => t.Created)
-                          .ToListAsync();
-    }
+        new ChartSeries() { Name = "จำนวน", Data = new double[] { 1, 0, 0, 1, 0, 0, 0 } }
+    };
+    private string[] _categoryLabels = { "ฮาร์ดแวร์", "ซอฟต์แวร์", "เครือข่าย", "สิ่งอำนวยความสะดวก", "เฟอร์นิเจอร์", "ระบบไฟฟ้า", "อื่นๆ" };
+
+    // --- ข้อมูลสำหรับกราฟวงกลม (ความสำคัญ) ---
+    private double[] _priorityData = { 0, 1, 1, 0 };
+    private string[] _priorityLabels = { "เร่งด่วน", "สูง", "ปานกลาง", "ต่ำ" };
 }
