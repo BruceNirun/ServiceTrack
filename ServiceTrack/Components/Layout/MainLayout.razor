@@ -1,24 +1,41 @@
 ﻿@inherits LayoutComponentBase
 
-<MudThemeProvider Theme="_myCustomTheme" />
+@* 1. วาง Provider ทั้งหมดไว้ที่ระดับบนสุด *@
+<MudThemeProvider Theme="_currentTheme" />
 <MudDialogProvider />
 <MudSnackbarProvider />
+<MudPopoverProvider />
 
+@* 2. MudLayout จะอยู่นอก Provider แต่จะยังคงได้รับผลของ Theme *@
 <MudLayout>
     <MudAppBar Elevation="1">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-        <MudText Typo="Typo.h5" Class="ml-3">Application</MudText>
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@DrawerToggle" />
+        <MudText Typo="Typo.h5" Class="ml-3">ServiceTrack</MudText>
         <MudSpacer />
-        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+        
+        <MudTooltip Text="โหมดสว่าง/มืด">
+            @* 3. แก้ไขการผูกข้อมูลของสวิตช์ให้ทำงานถูกต้อง *@
+            <MudSwitch @bind-Checked="IsDarkMode" Color="Color.Primary" T="bool" ThumbIcon="@(IsDarkMode ? Icons.Material.Filled.WbSunny : Icons.Material.Filled.NightsStay)" UncheckedColor="Color.Surface" />
+        </MudTooltip>
+
+        <MudTooltip Text="การแจ้งเตือน">
+            <MudIconButton Icon="@Icons.Material.Outlined.Notifications" Color="Color.Inherit" />
+        </MudTooltip>
+        
+        <MudTooltip Text="โปรไฟล์ผู้ใช้">
+            <MudIconButton Icon="@Icons.Material.Outlined.Person" Color="Color.Inherit" />
+        </MudTooltip>
     </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" Elevation="2">
+
+    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
         <MudDrawerHeader>
             <MudText Typo="Typo.h6">My App</MudText>
         </MudDrawerHeader>
         <NavMenu />
     </MudDrawer>
-    <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.Large" Class="my-4 pt-4">
+
+    <MudMainContent Class="pa-4">
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge">
             @Body
         </MudContainer>
     </MudMainContent>
@@ -31,32 +48,75 @@
     {
         _drawerOpen = !_drawerOpen;
     }
-    
-    // 2. สร้าง Theme และกำหนดค่าสีที่นี่
-    private MudTheme _myCustomTheme = new MudTheme()
+
+    // --- ส่วนของการจัดการ Theme และ Dark Mode (แก้ไขใหม่) ---
+
+    private MudTheme _currentTheme = new LightTheme(); // กำหนด Theme เริ่มต้น
+    private bool _isDarkMode;
+
+    // 4. สร้าง Property เพื่อจัดการการเปลี่ยนแปลงของ Dark Mode
+    private bool IsDarkMode
     {
-        // *** แก้ไขตรงนี้ ***
-        PaletteLight = new PaletteLight()
+        get => _isDarkMode;
+        set
         {
-            // กำหนดสีหลักของแอปเป็นสีน้ำเงิน (รหัส Hex)
-            Primary = "#326ff9",
-            
-            // กำหนดสีพื้นหลังของ AppBar โดยเฉพาะ
-            AppbarBackground = "#326ff9",
-
-            // กำหนดสีพื้นหลังของ Drawer (เมนูด้านซ้าย)
-            DrawerBackground = "#f5f5f5",
-
-            // คุณสามารถกำหนดสีอื่นๆ ได้อีกมากมาย เช่น
-            // Secondary = Colors.Green.Accent4,
-            // TextPrimary = Colors.Grey.Darken4,
-            // Surface = Colors.Grey.Lighten4, // สีพื้นหลังของ Card, Table
-        },
-        LayoutProperties = new LayoutProperties()
-        {
-            // สามารถปรับความโค้งมนของขอบได้
-            // DrawerWidthLeft = "260px",
-            // BorderRadius = "6px"
+            _isDarkMode = value;
+            // เมื่อค่าเปลี่ยน ให้สลับ Theme ทันที
+            _currentTheme = value ? new DarkTheme() : new LightTheme();
         }
-    };
+    }
+
+    // 5. สร้าง Theme ที่ปรับปรุงสีเพื่อให้อ่านง่ายขึ้น
+    // ธีมสำหรับโหมดสว่าง (Light Mode)
+    public class LightTheme : MudTheme
+    {
+        public LightTheme()
+        {
+            PaletteLight = new PaletteLight()
+            {
+                Primary = "#594AE2",
+                // กำหนดสีตัวอักษรบนพื้นหลังสี Primary ให้เป็นสีขาว
+                PrimaryContrastText = Colors.Shades.White, 
+                Secondary = "#00C853",
+                Background = "#F4F7FC",
+                AppbarBackground = "#594AE2",
+                DrawerBackground = "#FFFFFF",
+                // ทำให้สีตัวอักษรในเมนูปกติเข้มขึ้น
+                DrawerText = Colors.Gray.Darken3, 
+                DrawerIcon = Colors.Gray.Darken2,
+                Surface = "#FFFFFF"
+            };
+
+            LayoutProperties = new LayoutProperties()
+            {
+                DefaultBorderRadius = "12px"
+            };
+        }
+    }
+
+    // ธีมสำหรับโหมดมืด (Dark Mode)
+    public class DarkTheme : MudTheme
+    {
+        public DarkTheme()
+        {
+            PaletteDark = new PaletteDark()
+            {
+                Primary = "#776BE7",
+                PrimaryContrastText = Colors.Shades.White,
+                Secondary = "#00C853",
+                Background = "#121212",
+                AppbarBackground = "#1E1E1E",
+                DrawerBackground = "#1A1A1A",
+                // ทำให้สีตัวอักษรในเมนูสว่างขึ้น
+                DrawerText = Colors.Gray.Lighten2, 
+                DrawerIcon = Colors.Gray.Lighten1,
+                Surface = "#242424"
+            };
+
+            LayoutProperties = new LayoutProperties()
+            {
+                DefaultBorderRadius = "12px"
+            };
+        }
+    }
 }
