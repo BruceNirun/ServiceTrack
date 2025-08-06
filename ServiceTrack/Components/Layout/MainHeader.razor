@@ -1,0 +1,40 @@
+@* นี่คือคอมโพเนนต์ส่วนหัวที่รวมทุกอย่างไว้ด้วยกัน *@
+
+<MudAppBar Elevation="1" Color="Color.Surface" Class="px-2">
+    @* แถบเครื่องมือบน (Top Toolbar) *@
+
+    @* แถบเครื่องมือกลาง (สำหรับเลือก Role) *@
+    <MudToolBar Dense="true">
+        <MudSpacer />
+        <MudButton Variant="Variant.Text" Color="Color.Inherit" Class="mr-2">
+            <div class="d-flex align-center">
+                <MudIcon Icon="@Icons.Material.Outlined.PersonOutline" Class="mr-2"/>
+                <div>
+                    <MudText Typo="Typo.body1" Style="line-height: 1; font-weight: 500;">ผู้แจ้งซ่อม</MudText>
+                    <MudText Typo="Typo.caption" Style="line-height: 1;">แจ้งปัญหา/ติดตามสถานะ</MudText>
+                </div>
+            </div>
+        </MudButton>
+
+        <MudButton Variant="Variant.Text" Color="Color.Inherit" Class="mr-2">
+            <div class="d-flex align-center">
+                <MudIcon Icon="@Icons.Material.Outlined.Build" Class="mr-2"/>
+                <div>
+                    <MudText Typo="Typo.body1" Style="line-height: 1; font-weight: 500;">ทีมช่าง</MudText>
+                    <MudText Typo="Typo.caption" Style="line-height: 1;">รับงาน/ปิดเคส/รายงาน</MudText>
+                </div>
+            </div>
+        </MudButton>
+
+        <MudButton Variant="Variant.Filled" Color="Color.Primary">
+            <div class="d-flex align-center">
+                <MudIcon Icon="@Icons.Material.Outlined.AdminPanelSettings" Class="mr-2"/>
+                <div>
+                    <MudText Typo="Typo.body1" Style="line-height: 1; font-weight: 500;">ผู้ดูแลระบบ</MudText>
+                    <MudText Typo="Typo.caption" Style="line-height: 1;">จัดการระบบ/รายงาน</MudText>
+                </div>
+            </div>
+        </MudButton>
+        <MudSpacer />
+    </MudToolBar>
+</MudAppBar>

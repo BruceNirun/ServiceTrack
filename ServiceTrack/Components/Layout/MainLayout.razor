@@ -1,4 +1,5 @@
 ﻿@inherits LayoutComponentBase
+@using ServiceTrack.Components.Layout
 
 <MudThemeProvider Theme="_theme" />
 <MudDialogProvider />
@@ -22,10 +23,9 @@
         <MudTooltip Text="โปรไฟล์ผู้ใช้">
             <MudIconButton Icon="@Icons.Material.Outlined.Person" Color="Color.Inherit" />
         </MudTooltip>
-    
-
-        
     </MudAppBar>
+    
+    <MainHeader/>
 
     <MudMainContent>
         @* ไม่ต้องมี MudContainer ที่นี่ *@
