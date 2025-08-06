@@ -1,0 +1,39 @@
+﻿@page "/"
+
+@using Microsoft.EntityFrameworkCore
+@using MudBlazor
+@using ServiceTrack.Models
+@inject ServiceTrack.Data.AppDb Db
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary">Save</MudButton>
+
+<MudTable Items="tickets">
+    <HeaderContent>
+        <MudTh>#</MudTh>
+        <MudTh>Title</MudTh>
+        <MudTh>Status</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="#">@context.TicketId</MudTd>
+        <MudTd>@context.Title</MudTd>
+        <MudTd>@context.Status</MudTd>
+    </RowTemplate>
+</MudTable>
+
+
+@code {
+    private List<Ticket> tickets = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        tickets = await Db.Tickets
+                          .OrderByDescending(t => t.Created)
+                          .ToListAsync();
+    }
+}

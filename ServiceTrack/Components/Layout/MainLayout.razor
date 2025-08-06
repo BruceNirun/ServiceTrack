@@ -1,0 +1,62 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="_myCustomTheme" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudText Typo="Typo.h5" Class="ml-3">Application</MudText>
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+    </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="2">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h6">My App</MudText>
+        </MudDrawerHeader>
+        <NavMenu />
+    </MudDrawer>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.Large" Class="my-4 pt-4">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private bool _drawerOpen = true;
+
+    private void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+    
+    // 2. สร้าง Theme และกำหนดค่าสีที่นี่
+    private MudTheme _myCustomTheme = new MudTheme()
+    {
+        // *** แก้ไขตรงนี้ ***
+        PaletteLight = new PaletteLight()
+        {
+            // กำหนดสีหลักของแอปเป็นสีน้ำเงิน (รหัส Hex)
+            Primary = "#326ff9",
+            
+            // กำหนดสีพื้นหลังของ AppBar โดยเฉพาะ
+            AppbarBackground = "#326ff9",
+
+            // กำหนดสีพื้นหลังของ Drawer (เมนูด้านซ้าย)
+            DrawerBackground = "#f5f5f5",
+
+            // คุณสามารถกำหนดสีอื่นๆ ได้อีกมากมาย เช่น
+            // Secondary = Colors.Green.Accent4,
+            // TextPrimary = Colors.Grey.Darken4,
+            // Surface = Colors.Grey.Lighten4, // สีพื้นหลังของ Card, Table
+        },
+        LayoutProperties = new LayoutProperties()
+        {
+            // สามารถปรับความโค้งมนของขอบได้
+            // DrawerWidthLeft = "260px",
+            // BorderRadius = "6px"
+        }
+    };
+}
