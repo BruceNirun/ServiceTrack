@@ -6,11 +6,15 @@
 <MudPopoverProvider />
 
 <MudLayout>
+    @* 1. แก้ไข AppBar เพื่อเพิ่มลิงก์นำทาง *@
     <MudAppBar Elevation="1">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@DrawerToggle" />
-        <MudText Typo="Typo.h5" Class="ml-3">ServiceTrack</MudText>
+        <MudIcon Icon="@Icons.Material.Filled.Settings" Color="Color.Primary" Size="Size.Large" />
+        <div class="ml-3">
+            <MudText Typo="Typo.h6" Style="line-height: 1.2;">ระบบแจ้งซ่อมองค์กร</MudText>
+            <MudText Typo="Typo.body2" Style="line-height: 1;">Organizational Repair Request System</MudText>
+        </div>
         <MudSpacer />
-        
+
         <MudTooltip Text="การแจ้งเตือน">
             <MudIconButton Icon="@Icons.Material.Outlined.Notifications" Color="Color.Inherit" />
         </MudTooltip>
@@ -18,29 +22,19 @@
         <MudTooltip Text="โปรไฟล์ผู้ใช้">
             <MudIconButton Icon="@Icons.Material.Outlined.Person" Color="Color.Inherit" />
         </MudTooltip>
+    
+
+        
     </MudAppBar>
 
-    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
-        <MudDrawerHeader>
-            <MudText Typo="Typo.h6">My App</MudText>
-        </MudDrawerHeader>
-        <NavMenu />
-    </MudDrawer>
-
-    @* แก้ไขตรงนี้: เอา MudContainer และ Class ออก *@
     <MudMainContent>
+        @* ไม่ต้องมี MudContainer ที่นี่ *@
         @Body
     </MudMainContent>
 </MudLayout>
 
 @code {
-    private bool _drawerOpen = true;
-
-    private void DrawerToggle()
-    {
-        _drawerOpen = !_drawerOpen;
-    }
-
+    // 4. ลบโค้ดที่เกี่ยวกับ Drawer ออกไป
     private MudTheme _theme = new MudTheme()
     {
         PaletteLight = new PaletteLight()
@@ -49,7 +43,8 @@
             PrimaryContrastText = Colors.Shades.White, 
             Secondary = "#00C853",
             Background = "#F4F7FC",
-            AppbarBackground = "#594AE2",
+            AppbarBackground = "#FFFFFF", // เปลี่ยนสี AppBar เป็นสีขาว
+            AppbarText = Colors.Gray.Darken3, // เปลี่ยนสีข้อความบน AppBar เป็นสีเทาเข้ม
             DrawerBackground = "#FFFFFF",
             DrawerText = Colors.Gray.Darken3, 
             DrawerIcon = Colors.Gray.Darken2,
