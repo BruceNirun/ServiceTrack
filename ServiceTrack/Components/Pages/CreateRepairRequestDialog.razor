@@ -1,0 +1,144 @@
+@using System.ComponentModel.DataAnnotations
+@using ServiceTrack.Services
+@inject IRepairService RepairService
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">รายละเอียดการแจ้งซ่อมใหม่</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudForm @ref="_form" @bind-IsValid="_success" Class="mt-4">
+            <MudGrid Spacing="2">
+                <MudItem xs="12">
+                    <MudText Typo="Typo.subtitle1" GutterBottom="true"><b>รายละเอียดของปัญหา และการใช้งาน</b></MudText>
+                    <MudTextField @bind-Value="Model.ProblemDescription" Lines="3" Variant="Variant.Outlined" Required="true" RequiredError="กรุณากรอกรายละเอียดของปัญหา" />
+                </MudItem>
+                
+                <MudItem xs="12">
+                    <MudText Typo="Typo.subtitle1" GutterBottom="true"><b>รูปภาพประกอบ (ถ้ามี)</b></MudText>
+    
+                    <MudFileUpload T="IReadOnlyList<IBrowserFile>" FilesChanged="OnFilesChanged" Multiple="true" Accept=".png, .jpg, .jpeg">
+                        <ActivatorContent>
+                            <MudButton Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       StartIcon="@Icons.Material.Filled.Add">
+                                เพิ่มรูปภาพ
+                            </MudButton>
+                        </ActivatorContent>
+                    </MudFileUpload>
+
+                    @if (Model.AttachedFiles.Any())
+                    {
+                        <div class="d-flex flex-wrap mt-4">
+                            @foreach (var file in Model.AttachedFiles)
+                            {
+                                <MudChip T="string" Label="true" OnClose="() => RemoveFile(file)" Class="mr-2 mb-2">@file.Name</MudChip>
+                            }
+                        </div>
+                    }
+                </MudItem>
+
+                <MudItem xs="12"><MudDivider Class="my-2" /></MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="Model.LicensePlate" Label="ทะเบียนรถ" Variant="Variant.Outlined" Required="true" RequiredError="กรุณากรอกทะเบียนรถ" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="Model.VehicleSideNumber" Label="เลขข้างรถ" Variant="Variant.Outlined" Required="true" RequiredError="กรุณากรอกเลขข้างรถ" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="Model.Mileage" Label="เลขไมล์" Variant="Variant.Outlined" Required="true" RequiredError="กรุณากรอกเลขไมล์" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudDatePicker @bind-Date="Model.IncidentDate" Label="วันที่เกิดปัญหา" Variant="Variant.Outlined" Required="true" RequiredError="กรุณาเลือกวันที่" />
+                </MudItem>
+
+                <MudItem xs="12"><MudDivider Class="my-2" /></MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="Model.ReporterName" Label="ผู้รับผิดชอบแจ้งปัญหา" Variant="Variant.Outlined" Required="true" RequiredError="กรุณากรอกชื่อผู้แจ้ง" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="Model.ContactNumber" Label="เบอร์ติดต่อ" Variant="Variant.Outlined" Required="true" RequiredError="กรุณากรอกเบอร์ติดต่อ" />
+                </MudItem>
+                <MudItem xs="12">
+                     <MudTextField @bind-Value="Model.Location" Label="สถานที่ หรือพิกัด" Variant="Variant.Outlined" Required="true" RequiredError="กรุณากรอกสถานที่" />
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel" Class="px-4">ยกเลิก</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit" Class="px-6">แจ้งซ่อม</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; }
+
+    private bool _success;
+    private MudForm _form;
+    
+    // สร้าง Model สำหรับเก็บข้อมูลในฟอร์ม พร้อมใส่ค่าเริ่มต้นตามที่ให้มา
+    private NewRepairRequestModel Model { get; set; } = new NewRepairRequestModel();
+    
+    // Event handler เมื่อมีการเลือกไฟล์
+    private void OnFilesChanged(IReadOnlyList<IBrowserFile> files)
+    {
+        foreach (var file in files)
+        {
+            Model.AttachedFiles.Add(file);
+        }
+    }
+
+    // ฟังก์ชันสำหรับลบไฟล์ออกจาก List
+    private void RemoveFile(IBrowserFile file)
+    {
+        Model.AttachedFiles.Remove(file);
+    }
+
+    private async Task Submit()
+    {
+        _form.Validate(); // เปลี่ยนเป็น ValidateAsync()
+        if (_success)
+        {
+            try
+            {
+                // 3. เรียกใช้ Service เพื่อบันทึกข้อมูล
+                await RepairService.CreateRequestAsync(Model);
+                MudDialog.Close(DialogResult.Ok(Model)); // ส่งผลลัพธ์ว่าสำเร็จกลับไป
+            }
+            catch (Exception ex)
+            {
+                // จัดการ Error กรณีบันทึกไม่สำเร็จ (อาจจะแสดง Snackbar แจ้งเตือน)
+                Console.WriteLine(ex.Message); 
+                MudDialog.Cancel();
+            }
+        }
+    }
+
+    void Cancel() => MudDialog.Cancel();
+
+    public class NewRepairRequestModel
+    {
+        [Required]
+        public string ProblemDescription { get; set; } 
+        [Required]
+        public string LicensePlate { get; set; } 
+        [Required]
+        public string VehicleSideNumber { get; set; } 
+        [Required]
+        public string Mileage { get; set; } 
+        [Required]
+        public DateTime? IncidentDate { get; set; } 
+        [Required]
+        public string ReporterName { get; set; } 
+        [Required]
+        public string ContactNumber { get; set; } 
+        [Required]
+        public string Location { get; set; } 
+        public DateTime RequestDate { get; set; } = DateTime.Now;
+        
+        public IList<IBrowserFile> AttachedFiles { get; set; } = new List<IBrowserFile>();
+    }
+}

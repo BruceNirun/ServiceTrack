@@ -22,6 +22,36 @@ namespace ServiceTrack.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("ServiceTrack.Models.AttachedFile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RepairRequestId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StoredFileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RepairRequestId");
+
+                    b.ToTable("AttachedFiles");
+                });
+
             modelBuilder.Entity("ServiceTrack.Models.Category", b =>
                 {
                     b.Property<int>("CategoryId")
@@ -36,6 +66,53 @@ namespace ServiceTrack.Migrations
                     b.HasKey("CategoryId");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("ServiceTrack.Models.RepairRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ContactNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("IncidentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LicensePlate")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Mileage")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProblemDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReporterName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("RequestDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("VehicleSideNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RepairRequests");
                 });
 
             modelBuilder.Entity("ServiceTrack.Models.Ticket", b =>
@@ -68,6 +145,17 @@ namespace ServiceTrack.Migrations
                     b.ToTable("Tickets");
                 });
 
+            modelBuilder.Entity("ServiceTrack.Models.AttachedFile", b =>
+                {
+                    b.HasOne("ServiceTrack.Models.RepairRequest", "RepairRequest")
+                        .WithMany("AttachedFiles")
+                        .HasForeignKey("RepairRequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RepairRequest");
+                });
+
             modelBuilder.Entity("ServiceTrack.Models.Ticket", b =>
                 {
                     b.HasOne("ServiceTrack.Models.Category", "Category")
@@ -80,6 +168,11 @@ namespace ServiceTrack.Migrations
             modelBuilder.Entity("ServiceTrack.Models.Category", b =>
                 {
                     b.Navigation("Tickets");
+                });
+
+            modelBuilder.Entity("ServiceTrack.Models.RepairRequest", b =>
+                {
+                    b.Navigation("AttachedFiles");
                 });
 #pragma warning restore 612, 618
         }

@@ -9,5 +9,6 @@ public class AppDb : DbContext
     
     public DbSet<Ticket>    Tickets    => Set<Ticket>();
     public DbSet<Category>  Categories => Set<Category>();
-    
+    public DbSet<RepairRequest>  RepairRequests => Set<RepairRequest>();
+    public DbSet<AttachedFile>  AttachedFiles => Set<AttachedFile>();
 }

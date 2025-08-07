@@ -1,0 +1,212 @@
+@page "/requester"
+@using ServiceTrack.Services
+
+@inject NavigationManager NavManager
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject IRepairService RepairService
+
+<MudContainer MaxWidth="MaxWidth.False" Class="mt-4">
+
+    @* ============================================================= *@
+    @* === เนื้อหาสำหรับหน้าผู้แจ้งซ่อม (ตามรูป) === *@
+    @* ============================================================= *@
+
+    @* ส่วนหัวและปุ่มแจ้งซ่อมใหม่ *@
+    <div class="d-flex align-center mt-6">
+        <div>
+            <MudText Typo="Typo.h5">แดชบอร์ดผู้แจ้งซ่อม</MudText>
+            <MudText Typo="Typo.body2" Color="Color.Inherit">จัดการและติดตามคำขอซ่อมของคุณ</MudText>
+        </div>
+        <MudSpacer />
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="OpenCreateRequestDialog">แจ้งซ่อมใหม่</MudButton>
+    </div>
+
+    @* การ์ดสรุปสถานะ *@
+    <MudGrid Spacing="3" Class="mt-4">
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Outlined="true" Class="pa-4 d-flex align-center" Style="border-radius: 12px;">
+                <MudIcon Icon="@Icons.Material.Filled.HourglassEmpty" Color="Color.Warning" Class="mr-4"/>
+                <div>
+                    <MudText Typo="Typo.h6">0</MudText>
+                    <MudText Typo="Typo.body2">รอดำเนินการ</MudText>
+                </div>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+             <MudPaper Outlined="true" Class="pa-4 d-flex align-center" Style="border-radius: 12px;">
+                <MudIcon Icon="@Icons.Material.Filled.Sync" Color="Color.Info" Class="mr-4"/>
+                <div>
+                    <MudText Typo="Typo.h6">1</MudText>
+                    <MudText Typo="Typo.body2">กำลังดำเนินการ</MudText>
+                </div>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Outlined="true" Class="pa-4 d-flex align-center" Style="border-radius: 12px;">
+                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Class="mr-4"/>
+                <div>
+                    <MudText Typo="Typo.h6">1</MudText>
+                    <MudText Typo="Typo.body2">เสร็จสิ้น</MudText>
+                </div>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+             <MudPaper Outlined="true" Class="pa-4 d-flex align-center" Style="border-radius: 12px;">
+                <MudIcon Icon="@Icons.Material.Filled.AllInbox" Color="Color.Dark" Class="mr-4"/>
+                <div>
+                    <MudText Typo="Typo.h6">2</MudText>
+                    <MudText Typo="Typo.body2">ทั้งหมด</MudText>
+                </div>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+    @* แถบค้นหาและตัวกรอง *@
+    <MudPaper Outlined="true" Class="d-flex align-center pa-2 mt-6" Style="border-radius: 12px;">
+        <MudTextField T="string" Placeholder="ค้นหาตาม ID, หัวข้อ หรือสถานะ..." Variant="Variant.Text" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Inherit" Class="flex-grow-1" />
+        <MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.FilterList">ตัวกรอง</MudButton>
+    </MudPaper>
+
+    @* รายการคำขอซ่อม *@
+    <div class="mt-4">
+    @foreach (var request in _repairRequests)
+    {
+        <MudPaper Outlined="true" Class="pa-4 mb-4" Style="border-radius: 12px;">
+            <div class="d-flex align-start">
+                <div>
+                    <MudChip T="string" Label="true" Color="@GetStatusColor(request.Status)" Size="Size.Small" Class="mr-1">@request.Status</MudChip>
+                    <MudChip T="string" Label="true" Color="@GetPriorityColor(request.Priority)" Size="Size.Small">@request.Priority</MudChip>
+                </div>
+                
+                <MudSpacer />
+                <MudText Typo="Typo.body2" Color="Color.Primary" Class="mr-4">@request.Id</MudText>
+                <MudIconButton Icon="@Icons.Material.Outlined.Visibility" Size="Size.Small" />
+            </div>
+            <MudText Typo="Typo.h6">@request.LicensePlate</MudText>
+            <MudText Typo="Typo.body2" Class="mt-2">@request.Description</MudText>
+
+            <MudGrid Class="mt-3">
+                <MudItem xs="12" sm="4" Class="d-flex align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.LocationOn" Class="mr-2" />
+                    <MudText Typo="Typo.body2">@request.Location</MudText>
+                </MudItem>
+                <MudItem xs="12" sm="4" Class="d-flex align-center">
+                    <MudIcon Icon="@GetCategoryIcon(request.Category)" Class="mr-2" />
+                    <MudText Typo="Typo.body2">@request.Category</MudText>
+                </MudItem>
+                <MudItem xs="12" sm="4" Class="d-flex align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.Event" Class="mr-2" />
+                    <MudText Typo="Typo.body2">@request.RequestDate</MudText>
+                </MudItem>
+            </MudGrid>
+
+            <MudDivider Class="my-4" />
+
+            <div>
+                <MudText Typo="Typo.body2"><b>ผู้รับผิดชอบ:</b> @request.Assignee</MudText>
+                <MudText Typo="Typo.caption"><b>กำหนดเสร็จ:</b> @request.DueDate</MudText>
+            </div>
+        </MudPaper>
+    }
+    </div>
+
+</MudContainer>
+
+@code {
+    // 2. เปลี่ยนจากการเก็บข้อมูลตัวอย่าง เป็น List ว่างๆ เพื่อรอรับข้อมูลจาก Database
+    private List<RepairRequestItem> _repairRequests = new();
+    private bool _isLoading = true; // เพิ่มตัวแปรสำหรับแสดงสถานะ Loading
+
+    // 3. ใช้ OnInitializedAsync เพื่อดึงข้อมูลครั้งแรกเมื่อหน้าเว็บถูกเปิด
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDataAsync();
+    }
+
+    // 4. สร้างฟังก์ชันสำหรับโหลดและแปลงข้อมูล
+    private async Task LoadDataAsync()
+    {
+        _isLoading = true;
+        StateHasChanged(); // สั่งให้ UI อัปเดต (เพื่อแสดง Loading)
+
+        var requestsFromDb = await RepairService.GetRequestsAsync();
+
+        // แปลงข้อมูลจาก Database Entity (RepairRequest) เป็น UI Model (RepairRequestItem)
+        _repairRequests = requestsFromDb.Select(dbItem => new RepairRequestItem
+        {
+            Id = "#" + dbItem.Id.ToString("D4"), // ใช้ ID จากฐานข้อมูล
+            Topic = dbItem.ProblemDescription.Length > 25 ? dbItem.ProblemDescription.Substring(0, 25) + "..." : dbItem.ProblemDescription,
+            Description = dbItem.ProblemDescription,
+            Status = "รอมอบหมายงาน", // ควรมี Property นี้ใน Model จริง
+            Priority = "ปานกลาง",   // ควรมี Property นี้ใน Model จริง
+            Location = dbItem.Location,
+            Category = "ทั่วไป",    // ควรมี Property นี้ใน Model จริง
+            RequestDate = dbItem.RequestDate.ToString("dd MMM yyyy HH:mm"),
+            Assignee = "ยังไม่มอบหมาย", // ควรมี Property นี้ใน Model จริง
+            DueDate = "-", // ควรมี Property นี้ใน Model จริง
+            LicensePlate = dbItem.LicensePlate,
+            VehicleSideNumber = dbItem.VehicleSideNumber,
+            Mileage = dbItem.Mileage,
+            IncidentDate = dbItem.IncidentDate?.ToString("dd MMM yyyy"),
+            ReporterName = dbItem.ReporterName,
+            ContactNumber = dbItem.ContactNumber
+        }).ToList();
+
+        _isLoading = false;
+        StateHasChanged(); // สั่งให้ UI อัปเดตอีกครั้งเพื่อแสดงข้อมูล
+    }
+
+    // 5. ปรับปรุงฟังก์ชันเปิด Dialog ให้เรียก LoadDataAsync() เพื่อรีเฟรชข้อมูล
+    private async Task OpenCreateRequestDialog()
+    {
+        var dialog = DialogService.Show<CreateRepairRequestDialog>("รายละเอียดการแจ้งซ่อมใหม่");
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            Snackbar.Add("สร้างรายการแจ้งซ่อมสำเร็จ!", Severity.Success);
+            await LoadDataAsync(); // <-- เรียกโหลดข้อมูลใหม่ทั้งหมดจากฐานข้อมูล
+        }
+    }
+
+    // --- คลาส RepairRequestItem และฟังก์ชัน Get...Color/Icon เหมือนเดิม ---
+    public class RepairRequestItem {
+        public string Id { get; set; }
+        public string Topic { get; set; }
+        public string Description { get; set; }
+        public string Status { get; set; }
+        public string Priority { get; set; }
+        public string Location { get; set; }
+        public string Category { get; set; }
+        public string RequestDate { get; set; }
+        public string Assignee { get; set; }
+        public string DueDate { get; set; }
+        public string LicensePlate { get; set; }
+        public string VehicleSideNumber { get; set; }
+        public string Mileage { get; set; }
+        public string IncidentDate { get; set; }
+        public string ReporterName { get; set; }
+        public string ContactNumber { get; set; }
+    }
+    private Color GetStatusColor(string status) => status switch
+    {
+        "เสร็จสิ้น" => Color.Success,
+        "รอมอบหมายงาน" => Color.Info,
+        "กำลังดำเนินการ" => Color.Warning,
+        _ => Color.Default
+    };
+    private Color GetPriorityColor(string priority) => priority switch
+    {
+        "สูง" => Color.Error,
+        "ปานกลาง" => Color.Warning,
+        "ต่ำ" => Color.Success,
+        _ => Color.Default
+    };
+    private string GetCategoryIcon(string category) => category switch
+    {
+        "การเงิน" => Icons.Material.Filled.AccountBalance,
+        "ทรัพยากรบุคคล" => Icons.Material.Filled.People,
+        _ => Icons.Material.Filled.Help
+    };
+}

@@ -1,20 +1,25 @@
 using Microsoft.EntityFrameworkCore;
+using MudBlazor;
 using MudBlazor.Services;
 using ServiceTrack.Components;
 using ServiceTrack.Data;
-using MudBlazor;
-using MudBlazor.Services;
+using ServiceTrack.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDb>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddScoped<IRepairService, RepairService>();
+
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddMudServices(); 
+
+// เพิ่มบรรทัดนี้เพื่อลงทะเบียนคลาสแปลภาษาไทยของเรา
+builder.Services.AddSingleton(typeof(MudLocalizer), typeof(ThaiMudLocalizer));
 
 var app = builder.Build();
 

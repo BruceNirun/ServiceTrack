@@ -1,5 +1,4 @@
 ﻿@inherits LayoutComponentBase
-@using ServiceTrack.Components.Layout
 
 <MudThemeProvider Theme="_theme" />
 <MudDialogProvider />
@@ -7,10 +6,23 @@
 <MudPopoverProvider />
 
 <MudLayout>
-    @* 1. เรียกใช้คอมโพเนนต์ส่วนหัวที่เราสร้างขึ้น *@
-    <MainHeader />
+    @* 1. ใช้ MudAppBar ที่มี Fixed="true" ซึ่งจะจัดการ Layout ให้ถูกต้อง *@
+    <MudAppBar Elevation="1" Color="Color.Surface" Fixed="true">
+        @* แถบเครื่องมือบน (Top Toolbar) *@
+        <MudToolBar Class="px-4">
+            <MudAvatar Color="Color.Primary" Rounded="true">
+                <MudIcon Icon="@Icons.Material.Filled.Settings" />
+            </MudAvatar>
+            <div class="ml-3">
+                <MudText Typo="Typo.h6" Style="line-height: 1.2;">ระบบแจ้งซ่อมองค์กร</MudText>
+                <MudText Typo="Typo.body2" Style="line-height: 1;">Organizational Repair Request System</MudText>
+            </div>
+            <MudSpacer />
+        </MudToolBar>
+        
+    </MudAppBar>
 
-    @* 2. ส่วนของ Body จะแสดงเนื้อหาของแต่ละหน้า *@
+    @* 2. ส่วนของ Body จะถูกดันลงมาโดยอัตโนมัติ *@
     <MudMainContent>
         @Body
     </MudMainContent>
@@ -25,11 +37,11 @@
             Primary = "#2962FF",
             PrimaryContrastText = Colors.Shades.White, 
             Secondary = "#00C853",
-            Background = "#FFFFFF", // เปลี่ยนพื้นหลังหลักเป็นสีขาว
+            Background = "#F4F7FC",
             AppbarBackground = "#FFFFFF",
             AppbarText = Colors.Gray.Darken3,
             Surface = "#FFFFFF",
-            Divider = Colors.Gray.Lighten4 // สีเส้นคั่น
+            Divider = Colors.Gray.Lighten4
         },
         LayoutProperties = new LayoutProperties()
         {

@@ -1,0 +1,28 @@
+@page "/technician"
+
+@inject NavigationManager NavManager
+
+<MudContainer MaxWidth="MaxWidth.False" Class="mt-4">
+    
+    @* เนื้อหาสำหรับหน้าทีมช่าง *@
+    <MudPaper Class="pa-4 mt-6">
+        <MudText Typo="Typo.h4">หน้าสำหรับทีมช่าง</MudText>
+        <MudText Typo="Typo.body1" Class="mt-4">ส่วนนี้คือพื้นที่สำหรับให้ทีมช่างดูรายการงานซ่อมที่ได้รับมอบหมาย, อัปเดตสถานะ, และปิดงาน</MudText>
+    </MudPaper>
+
+</MudContainer>
+
+@code {
+    private string _selectedRole = "Technician"; // กำหนดค่าเริ่มต้นเป็น Technician
+
+    private void SelectRole(string role)
+    {
+        var path = role switch
+        {
+            "Requester" => "/requester",
+            "Technician" => "/technician",
+            _ => "/"
+        };
+        NavManager.NavigateTo(path);
+    }
+}
