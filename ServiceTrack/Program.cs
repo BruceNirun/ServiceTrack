@@ -1,6 +1,8 @@
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
-using MudBlazor;
 using MudBlazor.Services;
+using MudBlazor.Translations;
 using ServiceTrack.Components;
 using ServiceTrack.Data;
 using ServiceTrack.Services;
@@ -16,10 +18,9 @@ builder.Services.AddScoped<IRepairService, RepairService>();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddMudServices(); 
 
-// เพิ่มบรรทัดนี้เพื่อลงทะเบียนคลาสแปลภาษาไทยของเรา
-builder.Services.AddScoped(typeof(MudLocalizer), typeof(ThaiMudLocalizer));
+builder.Services.AddMudServices(); 
+builder.Services.AddMudTranslations();
 
 var app = builder.Build();
 
@@ -31,6 +32,15 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+// --- การตั้งค่า Middleware สำหรับบังคับภาษา ---
+var supportedCultures = new[] { new CultureInfo("th-TH") };
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("th-TH"),
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures
+});
 
 app.UseHttpsRedirection();
 
