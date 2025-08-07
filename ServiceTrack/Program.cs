@@ -19,7 +19,7 @@ builder.Services.AddRazorComponents()
 builder.Services.AddMudServices(); 
 
 // เพิ่มบรรทัดนี้เพื่อลงทะเบียนคลาสแปลภาษาไทยของเรา
-builder.Services.AddSingleton(typeof(MudLocalizer), typeof(ThaiMudLocalizer));
+builder.Services.AddScoped(typeof(MudLocalizer), typeof(ThaiMudLocalizer));
 
 var app = builder.Build();
 
